@@ -12,32 +12,12 @@ export default function Game() {
         setCurrentMove(nextHistory.length - 1);
     }
 
-    function jumpTo(nextMove) {
-        setCurrentMove(nextMove);
-    }
-
-    const moves = history.map((squares, move) => {
-        let description;
-        if (move > 0) {
-            description = 'Go to move #' + move;
-        } 
-        else {
-            description = 'Go to game start';
-        }
-        return (
-            <li key={move}>
-            <button onClick={() => jumpTo(move)}>{description}</button>
-            </li>
-        );
-    });
-
     return (
         <div className="game">
         <div className="game-board">
         <Board squares={currentSquares} onPlay={handlePlay} currentMove={currentMove} />
         </div>
         <div className="game-info">
-        <ol>{moves}</ol>
         </div>
         </div>
     );
@@ -85,7 +65,7 @@ function Board({ squares, onPlay, currentMove }) {
                         nextSquares[i] = (xIsNext ? 'X' : 'O');
                         nextSquares[origin.originSquare] = null;
                         setOrigin({ ...origin, selected: false});
-                        console.log("1Moved ", (xIsNext ? 'X' : 'O'), " to square ", i)
+                        console.log("Moved ", (xIsNext ? 'X' : 'O'), " to square ", i)
                         setxIsNext(!xIsNext);
                     }
                 }
@@ -97,6 +77,7 @@ function Board({ squares, onPlay, currentMove }) {
             else if (origin.selected === false) {
                 if (xIsNext && nextSquares[i] === 'X' || !xIsNext && nextSquares[i] === 'O') {
                     setOrigin({ ...origin, selected: true, originSquare: i});
+                    console.log(origin.originSquare)
                     console.log("Selected square ", i, " containing ", (xIsNext ? 'X' : 'O'), " to move to adjacent square.")
                 }
             }
@@ -107,10 +88,11 @@ function Board({ squares, onPlay, currentMove }) {
     const winner = calculateWinner(squares);
     let status;
     if (winner) {
-        status = 'Winner: ' + winner;
+        status = 'Winner: ' + winner + " !";
     } 
     else if (currentMove > 5) {
-        status = 'Choose a piece to move: ' + (xIsNext ? 'X' : 'O');
+        if (!origin.selected) status = 'Choose a piece to move: ' + (xIsNext ? 'X' : 'O');
+        else status = 'Choose a adjacent space to move to: ' + (xIsNext ? 'X' : 'O')
     }
     else {
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
@@ -120,36 +102,28 @@ function Board({ squares, onPlay, currentMove }) {
         <div>
         <div className="status">{status}</div>
         <div className="board-row">
-        <Square origin={origin} value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square origin={origin} value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square origin={origin} value={squares[2]} onSquareClick={() => handleClick(2)} />
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
         </div>
         <div className="board-row">
-        <Square origin={origin} value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square origin={origin} value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square origin={origin} value={squares[5]} onSquareClick={() => handleClick(5)} />
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
         </div>
         <div className="board-row">
-        <Square origin={origin} value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square origin={origin} value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square origin={origin} value={squares[8]} onSquareClick={() => handleClick(8)} />
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
         </div>
         </div>
     );
 }
 
-function Square({ value, onSquareClick, origin }) {
-    const [squareClassName, setsquareClassName] = useState("square");
-
-    function newonSquareClick () {
-        onSquareClick();
-        if (value && origin.square) {
-            setsquareClassName("square2")
-        }
-    }
+function Square({ value, onSquareClick }) {
 
     return (
-        <button className={squareClassName} onClick={newonSquareClick}>
+        <button className="square" onClick={onSquareClick}>
         {value}
         </button>
     );
