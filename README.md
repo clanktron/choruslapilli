@@ -4,6 +4,8 @@ A simple twist on tictactoe. After each placing three pieces players must move t
 to any adjacent squares in an attempt to get three in a row. If a player has a piece in the center square
 they must either vacate the square or win on the following turn.
 
+>Built with Nodejs and React
+
 For local testing:
 
 ```bash
